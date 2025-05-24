@@ -1,1 +1,16 @@
--TailWind Setup
+-First we Intigrated TailWind css into our application
+- we going to implements
+    - Header
+    -Body
+        -SideBar
+            -MenuItems
+        -MainCOntainer
+            -buttonsList
+            -VideoContainer
+                -VideoCard
+
+-configured the contextMenu using redux Store
+-Implemented the routing using react-router-dom
+-Achieve the toggle functionality of SideBar   
+-Achieve Single Video Card Displaying  
+-useSearchParams hoot to query params of selected Video ID
