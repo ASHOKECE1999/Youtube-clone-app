@@ -1,4 +1,4 @@
--First we Intigrated TailWind css into our application
+-First we Integrated TailWind css into our application
 - we going to implements
     - Header
     -Body
@@ -14,3 +14,7 @@
 -Achieve the toggle functionality of SideBar   
 -Achieve Single Video Card Displaying  
 -useSearchParams hoot to query params of selected Video ID
+-implemented HigherOrderComponent
+-Debouncing with 200ms - if difference between 2 keystrokes less than 200mins - ignore API CALL
+-Integrated Youtube searchApiParams
+- Using the data returned by SuggestionAPI implemented suggestion box

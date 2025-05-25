@@ -1,34 +1,101 @@
-import React from "react";
-import { YOUTUBE_LOGO } from "../utils/constants";
+import React, { useEffect, useRef, useState } from "react";
+import { YOUTUBE_LOGO, YOUTUBE_SEARCH_API } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { changeToggelState } from "../store/mainContextSlice";
 
 const Header = () => {
-  const dispatch=useDispatch()
-  const changeToggel=()=>{
-    dispatch(changeToggelState())
-  }
+  const dispatch = useDispatch();
+  const [searchQuey, searchQueySetter] = useState("");
+  const [suggestionArray, suggestArraySetter] = useState([]);
+  const [isDisplay, displaySetter] = useState(false);
+  const containerRef=useRef(null)
+
+  const changeToggel = () => {
+    dispatch(changeToggelState());
+  };
+  useEffect(() => {
+    const timer = setTimeout(() => getSearchSuggestions(), 200);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchQuey]);
+
+  useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (containerRef.current && !containerRef.current.contains(e.target)) {
+      displaySetter(false);
+    }
+  };
+  document.addEventListener("click", handleClickOutside);
+  return () => document.removeEventListener("click", handleClickOutside);
+}, []);
+
+
+
+  const getSearchSuggestions = async () => {
+    const data = await fetch(YOUTUBE_SEARCH_API + searchQuey);
+    const json = await data.json();
+    suggestArraySetter(json[1]);
+    console.log(json);
+  };
+
+  console.log(isDisplay, "isDisplay");
+
   return (
     <div className="flex items-center justify-between px-2 shadow-lg">
       <div className="flex items-center justify-center">
-        <div className="h-12 w-16 flex items-center justify-center text-2xl" onClick={changeToggel}>☰</div> <img src={YOUTUBE_LOGO} alt="logo" className="h-12" />
+        <div
+          className="h-12 w-16 flex items-center justify-center text-2xl"
+          onClick={changeToggel}
+        >
+          ☰
+        </div>{" "}
+        <img src={YOUTUBE_LOGO} alt="logo" className="h-12" />
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center flex-col justify-center relative" ref={containerRef}>
         <div className="flex items-center">
-          <input
-            type="text"
-            placeholder="Search Here"
-            className="border-s-orange-100 border-2 w-[350px] h-8 rounded-l-full placeholder:p-4 py-4 pb-5 outline-none focus:outline-none"
-          />
-          <h1 className="h-10 w-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-slate-300 border-s-orange-100 border-2 rounded-r-full">
-            🔍
-          </h1>
+          <div className="flex items-center">
+            <input
+              value={searchQuey}
+              onFocus={() => displaySetter(true)}
+              onChange={(e) => searchQueySetter(e.target.value)}
+              type="text"
+              placeholder="Search Here"
+              className="border-s-orange-100 border-2 w-[350px] h-8 pl-6 rounded-l-full placeholder:p-4 py-4 pb-5 outline-none focus:outline-none"
+            />
+            <h1 className="h-10 w-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-slate-300 border-s-orange-100 border-2 rounded-r-full">
+              🔍
+            </h1>
+          </div>
+          <div className="h-12 w-16 flex items-center justify-center text-2xl cursor-pointer bg-gray-50 rounded-3xl text-black border-2 hover:bg-gray-500">
+            🎙️
+          </div>
         </div>
-        <div className="h-12 w-16 flex items-center justify-center text-2xl cursor-pointer bg-gray-50 rounded-3xl text-black border-2 hover:bg-gray-500">🎙️</div>
+        {isDisplay && suggestionArray.length > 1 && (
+          <div className="flex justify-start absolute bg-white shadow-slate-600 shadow-lg z-auto rounded-2xl px-2 py-2  top-full left-0 w-full">
+            <ul className="w-[100%] rounded-xl">
+              {suggestionArray.map((eachItem) => (
+                <li
+                  key={eachItem}
+                  onClick={() => {
+                    searchQueySetter(eachItem);
+                  }}
+                  className="flex items-center px-0 text-lg hover:bg-slate-200 hover:rounded-md"
+                >
+                  🔍{eachItem}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
       <div className="flex items-center">
-        <h1 className="h-10 w-16 flex items-center justify-center text-2xl hover:bg-slate-300 rounded-3xl">🔔</h1>
-        <h1 className="h-9 w-16 flex items-center justify-center text-2xl bg-slate-400 rounded-3xl">M</h1>
+        <h1 className="h-10 w-16 flex items-center justify-center text-2xl hover:bg-slate-300 rounded-3xl">
+          🔔
+        </h1>
+        <h1 className="h-9 w-20 flex items-center justify-center text-l bg-black text-white rounded-3xl">
+          Ashok A
+        </h1>
       </div>
     </div>
   );

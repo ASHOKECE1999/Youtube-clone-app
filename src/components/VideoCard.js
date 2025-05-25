@@ -1,10 +1,10 @@
 import React from "react";
 
 const VideoCard = ({ info }) => {
-  console.log(info);
+  // console.log(info);
   const { snippet, statistics } = info;
   const { channelTitle, title, thumbnails } = snippet;
-  const { commentCount, favoriteCount, likeCount, viewCount } = statistics;
+  const {  viewCount } = statistics;
   return (
     <div className="shadow-md max-w-80 py-4 px-2 m-1 rounded-xl">
       <img src={thumbnails.medium.url} alt={channelTitle} className="rounded-xl" />
@@ -17,5 +17,9 @@ const VideoCard = ({ info }) => {
     </div>
   );
 };
+
+export const AddVideoCard=({info})=>{
+  return <div className="border-red-500 border-solid border-2"><VideoCard  info={info}/></div>
+}
 
 export default VideoCard;
