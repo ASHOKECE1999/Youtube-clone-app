@@ -1,14 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import { YOUTUBE_LOGO, YOUTUBE_SEARCH_API } from "../utils/constants";
+import {
+  YOUTUBE_LOGO,
+  YOUTUBE_SEARCH_API,
+  YOUTUBE_SEARCH_RESULTS,
+} from "../utils/constants";
 import { useDispatch } from "react-redux";
-import { changeToggelState } from "../store/mainContextSlice";
+import { addDisplayVideos, changeToggelState } from "../store/mainContextSlice";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
   const [searchQuey, searchQueySetter] = useState("");
   const [suggestionArray, suggestArraySetter] = useState([]);
   const [isDisplay, displaySetter] = useState(false);
-  const containerRef=useRef(null)
+  const containerRef = useRef(null);
 
   const changeToggel = () => {
     dispatch(changeToggelState());
@@ -21,25 +26,39 @@ const Header = () => {
   }, [searchQuey]);
 
   useEffect(() => {
-  const handleClickOutside = (e) => {
-    if (containerRef.current && !containerRef.current.contains(e.target)) {
-      displaySetter(false);
-    }
-  };
-  document.addEventListener("click", handleClickOutside);
-  return () => document.removeEventListener("click", handleClickOutside);
-}, []);
-
-
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        displaySetter(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   const getSearchSuggestions = async () => {
     const data = await fetch(YOUTUBE_SEARCH_API + searchQuey);
     const json = await data.json();
     suggestArraySetter(json[1]);
-    console.log(json);
+    // console.log(json);
   };
 
-  console.log(isDisplay, "isDisplay");
+  const getVideosOnSearch = async () => {
+    const data = await fetch(YOUTUBE_SEARCH_RESULTS + searchQuey);
+    const json = await data.json();
+    displaySetter(false);
+    dispatch(addDisplayVideos(json.items));
+    console.log(json, "SearchVideos");
+  };
+
+  const getResultsOnSearch = (eachItem) => {
+    searchQueySetter(eachItem);
+  };
+
+  const searchTrigger = () => {
+    getVideosOnSearch();
+  };
+
+  // console.log(isDisplay, "isDisplay");
 
   return (
     <div className="flex items-center justify-between px-2 shadow-lg">
@@ -49,13 +68,14 @@ const Header = () => {
           onClick={changeToggel}
         >
           ☰
-        </div>{" "}
+        </div>
         <img src={YOUTUBE_LOGO} alt="logo" className="h-12" />
       </div>
-      <div className="flex items-center flex-col justify-center relative" ref={containerRef}>
+      <div className="flex items-center flex-col justify-center relative">
         <div className="flex items-center">
           <div className="flex items-center">
             <input
+              ref={containerRef}
               value={searchQuey}
               onFocus={() => displaySetter(true)}
               onChange={(e) => searchQueySetter(e.target.value)}
@@ -63,7 +83,10 @@ const Header = () => {
               placeholder="Search Here"
               className="border-s-orange-100 border-2 w-[350px] h-8 pl-6 rounded-l-full placeholder:p-4 py-4 pb-5 outline-none focus:outline-none"
             />
-            <h1 className="h-10 w-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-slate-300 border-s-orange-100 border-2 rounded-r-full">
+            <h1
+              onClick={searchTrigger}
+              className="h-10 w-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-slate-300 border-s-orange-100 border-2 rounded-r-full"
+            >
               🔍
             </h1>
           </div>
@@ -77,9 +100,7 @@ const Header = () => {
               {suggestionArray.map((eachItem) => (
                 <li
                   key={eachItem}
-                  onClick={() => {
-                    searchQueySetter(eachItem);
-                  }}
+                  onClick={() => getResultsOnSearch(eachItem)}
                   className="flex items-center px-0 text-lg hover:bg-slate-200 hover:rounded-md"
                 >
                   🔍{eachItem}
