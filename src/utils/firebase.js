@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCgv59LACK97m7wNvBLTllOaecjH2BZ1RE",
-  authDomain: "clone-32688.firebaseapp.com",
-  projectId: "clone-32688",
-  storageBucket: "clone-32688.firebasestorage.app",
-  messagingSenderId: "462658989165",
-  appId: "1:462658989165:web:9c3cfc40555aae40686364"
+  apiKey: "AIzaSyDppz4niD3hiAQwcr57Qvu-L5PLDo731yo",
+  authDomain: "utubeclone-e4e61.firebaseapp.com",
+  projectId: "utubeclone-e4e61",
+  storageBucket: "utubeclone-e4e61.firebasestorage.app",
+  messagingSenderId: "709084370325",
+  appId: "1:709084370325:web:840c372c8365717082129c",
 };
 
 // Initialize Firebase
