@@ -5,9 +5,11 @@ const mainContextSlice = createSlice({
   initialState: {
     isToggleOn: true,
     displayVideosList: [],
+    isSearchOn: false,
+    onSearchVideos: [],
   },
   reducers: {
-    changeToggelState: (state) => {
+    changeToggleState: (state) => {
       state.isToggleOn = !state.isToggleOn;
     },
     closeMenu: (state) => {
@@ -16,8 +18,20 @@ const mainContextSlice = createSlice({
     addDisplayVideos: (state, action) => {
       state.displayVideosList = action.payload;
     },
+    searchToggle: (state, action) => {
+      state.isSearchOn = action.payload;
+    },
+    onSearchVideosSet: (state, action) => {
+      console.log();
+      state.onSearchVideos = action.payload;
+    },
   },
 });
-export const { changeToggelState, closeMenu, addDisplayVideos } =
-  mainContextSlice.actions;
+export const {
+  changeToggleState,
+  closeMenu,
+  addDisplayVideos,
+  onSearchVideosSet,
+  searchToggle,
+} = mainContextSlice.actions;
 export default mainContextSlice.reducer;

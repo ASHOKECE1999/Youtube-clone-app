@@ -5,18 +5,25 @@ import {
   YOUTUBE_SEARCH_RESULTS,
 } from "../utils/constants";
 import { useDispatch } from "react-redux";
-import { addDisplayVideos, changeToggelState } from "../store/mainContextSlice";
-import { Link } from "react-router-dom";
+import {
+  addDisplayVideos,
+  changeToggleState,
+  onSearchVideos,
+  onSearchVideosSet,
+  searchToggle,
+} from "../store/mainContextSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchQuey, searchQueySetter] = useState("");
   const [suggestionArray, suggestArraySetter] = useState([]);
   const [isDisplay, displaySetter] = useState(false);
   const containerRef = useRef(null);
 
-  const changeToggel = () => {
-    dispatch(changeToggelState());
+  const changeToggle = () => {
+    dispatch(changeToggleState());
   };
   useEffect(() => {
     const timer = setTimeout(() => getSearchSuggestions(), 200);
@@ -39,15 +46,15 @@ const Header = () => {
     const data = await fetch(YOUTUBE_SEARCH_API + searchQuey);
     const json = await data.json();
     suggestArraySetter(json[1]);
-    // console.log(json);
   };
 
   const getVideosOnSearch = async () => {
     const data = await fetch(YOUTUBE_SEARCH_RESULTS + searchQuey);
     const json = await data.json();
     displaySetter(false);
-    dispatch(addDisplayVideos(json.items));
-    console.log(json, "SearchVideos");
+    dispatch(onSearchVideosSet(json.items));
+    navigate("/");
+    searchQueySetter("");
   };
 
   const getResultsOnSearch = (eachItem) => {
@@ -55,17 +62,17 @@ const Header = () => {
   };
 
   const searchTrigger = () => {
+    console.log("clickTrigger");
     getVideosOnSearch();
+    dispatch(searchToggle(true));
   };
-
-  // console.log(isDisplay, "isDisplay");
 
   return (
     <div className="flex items-center justify-between px-2 shadow-lg">
       <div className="flex items-center justify-center">
         <div
           className="h-12 w-16 flex items-center justify-center text-2xl"
-          onClick={changeToggel}
+          onClick={changeToggle}
         >
           ☰
         </div>
