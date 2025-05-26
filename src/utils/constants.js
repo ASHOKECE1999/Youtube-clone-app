@@ -10,4 +10,4 @@ export const YOUTUBE_SEARCH_RESULTS =
   process.env.REACT_APP_YOUTUBE_API_KEY +
   "&q=";
 
-export const OFF_SET_LIVE_CHAT = 10;
+export const OFF_SET_LIVE_CHAT = 5;
